@@ -1,0 +1,1 @@
+Ce répertoire liste l'ensemble des enseignements suivis durant les deux semestres de SI4 à Polytech Nice Sophia en 2023-2024. Les enseignements sont divisés en deux groupes : ceux du semestre 7 et ceux du semestre 8.
