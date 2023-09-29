@@ -14,18 +14,29 @@ import java.util.UUID;
 
 public class VoteManager {
 
-    private List<Candidate> candidates;
+    private Map<Integer, Candidate> candidates;
 
     private Map<UUID, Boolean> haveVotersVotedMap;
-    private List<User> voters;
+    private final Map<UUID, User> voters; // TODO : maybe not useful
+
+    private final Map<UUID, Vote> voterVotes;
 
     public VoteManager() {
         buildCandidatesList();
         buildHaveVotersVotedMap();
+        voterVotes = new HashMap<>();
+        voters = new HashMap<>();
     }
 
     private void buildCandidatesList() {
-        this.candidates = (List<Candidate>) FileManager.createList("Candidates.txt");
+        this.candidates = new HashMap<>();
+        List<Candidate> candidatesList = (List<Candidate>) FileManager.createList("Candidates.txt");
+        int rank = 0;
+        for (Candidate candidate : candidatesList) {
+            candidates.put(rank, candidate);
+        }
+
+
     }
 
     private void buildHaveVotersVotedMap() {
@@ -43,8 +54,32 @@ public class VoteManager {
         this.haveVotersVotedMap.clear();
     }
 
-    public void addVoterToMap(UUID userId) {
+    public boolean addVoterToMap(UUID userId) {
+        User user = findUserByUUID(userId);
+        if (user == null) return false;
+        else {
+            this.voters.put(userId, user);
+        }
         this.haveVotersVotedMap.put(userId, Boolean.FALSE);
+        return true;
+    }
+
+    public User findUserByUUID(UUID userId) {
+        for (User user : Main.userConnectionManager.getPersonList()) {
+            if (user.getUserId().equals(userId)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public boolean addVoteForCandidate(UUID userId, int candidateRank, int userVoteValue) {
+        if (this.haveVotersVotedMap.get(userId).equals(Boolean.TRUE)) return false;
+        else {
+            if (this.voterVotes.containsKey(userId) && this.voterVotes.get(userId) != null) {
+                return this.voterVotes.get(userId).addVote(candidateRank, userVoteValue);
+            } else return false;
+        }
     }
 
     public boolean haveEveryVoterVoted() {
@@ -56,11 +91,11 @@ public class VoteManager {
         return true;
     }
 
-    public List<Candidate> getCandidates() {
+    public Map<Integer, Candidate> getCandidates() {
         return candidates;
     }
 
-    public boolean hasVoterVoted(UUID userId) throws InvalidUserIdException {
+    public boolean hasVoterAlreadyVoted(UUID userId) throws InvalidUserIdException {
         if (this.haveVotersVotedMap.containsKey(userId)) {
             return this.haveVotersVotedMap.get(userId);
         } else throw new InvalidUserIdException();
@@ -83,12 +118,32 @@ public class VoteManager {
         } else {
             if (this.haveVotersVotedMap.get(userId).equals(Boolean.TRUE)) throw new TwoTimeVoteException();
             else {
-                for (User user : voters) {
+                for (User user : voters.values()) {
                     if (user.getUserId().equals(userId)) {
-                        return user.getVote().getVotes().size() == this.candidates.size();
+                        return this.voterVotes.get(userId).getVotes().size() == this.candidates.size();
                     }
                 }
             }
         }
+        return false;
+    }
+
+    public Vote getUserVote(UUID userId) {
+        if (this.voterVotes.containsKey(userId)) {
+            return this.voterVotes.get(userId);
+        }
+        return null;
+    }
+
+    public Map<UUID, User> getVoters() {
+        return voters;
+    }
+
+    public Map<UUID, Boolean> getHaveVotersVotedMap() {
+        return haveVotersVotedMap;
+    }
+
+    public Map<UUID, Vote> getVoterVotes() {
+        return voterVotes;
     }
 }

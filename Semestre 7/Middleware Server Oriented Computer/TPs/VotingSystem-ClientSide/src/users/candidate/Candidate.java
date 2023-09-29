@@ -1,17 +1,11 @@
 package users.candidate;
 
 import users.Person;
-import users.exceptions.InvalidRankValueException;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 public class Candidate implements Serializable, Person {
-
-    /**
-     * Rank of this candidate in the current vote
-     */
-    private final int rank;
 
     /**
      * Number of time people voted for this candidate in the current vote
@@ -33,16 +27,12 @@ public class Candidate implements Serializable, Person {
      */
     private final String pitch; // TODO : pitch can be a text or a video
 
-    public Candidate(String firstName, String lastName, String pitch, int rank) throws InvalidRankValueException {
+    public Candidate(String firstName, String lastName, String pitch) {
 
         this.firstName = firstName;
         this.lastName = lastName;
         this.numberOfVotes = 0;
         this.pitch = pitch;
-        if (rank < 1) { // rank given by the system incrementing automatically
-            throw new InvalidRankValueException();
-        }
-        this.rank = rank;
     }
 
     public String getFirstName() {
@@ -61,10 +51,6 @@ public class Candidate implements Serializable, Person {
         this.numberOfVotes++;
     }
 
-    public int getRank() {
-        return rank;
-    }
-
     public String getPitch() {
         return pitch;
     }
@@ -76,7 +62,6 @@ public class Candidate implements Serializable, Person {
 
         Candidate candidate = (Candidate) o;
 
-        if (rank != candidate.rank) return false;
         if (numberOfVotes != candidate.numberOfVotes) return false;
         if (!Objects.equals(firstName, candidate.firstName)) return false;
         if (!Objects.equals(lastName, candidate.lastName)) return false;
@@ -85,8 +70,7 @@ public class Candidate implements Serializable, Person {
 
     @Override
     public int hashCode() {
-        int result = rank;
-        result = 31 * result + numberOfVotes;
+        int result = numberOfVotes;
         result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (pitch != null ? pitch.hashCode() : 0);

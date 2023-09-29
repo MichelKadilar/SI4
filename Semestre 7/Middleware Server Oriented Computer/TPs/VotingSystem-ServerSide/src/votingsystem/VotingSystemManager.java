@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class VotingSystemManager {
 
-    private VoteManager voteManager;
+    private final VoteManager voteManager;
 
     public VotingSystemManager() {
         this.voteManager = new VoteManager();
@@ -32,12 +32,15 @@ public class VotingSystemManager {
 
     public void startVote() {
         Output.displayTheVoteHasBeenStarted();
-        while (!this.voteManager.haveEveryUserVoted()) {
-
+        while (!this.voteManager.haveEveryVoterVoted()) {
         }
     }
 
-    public void addVoter(UUID userId) {
-        voteManager.addVoterToMap(userId);
+    public boolean addVoter(UUID userId) {
+        return voteManager.addVoterToMap(userId);
+    }
+
+    public VoteManager getVoteManager() {
+        return voteManager;
     }
 }

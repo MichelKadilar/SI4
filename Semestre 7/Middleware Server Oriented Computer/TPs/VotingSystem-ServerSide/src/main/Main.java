@@ -10,7 +10,8 @@ public class Main {
     public static PersonManager<User> userConnectionManager;
 
     public static void main(String[] args) throws RemoteException {
-        SetupRMI.setupRMI();
         userConnectionManager = new PersonManager<>("Users.txt");
+        SetupRMI.setupRMI();
+
     }
 }

@@ -1,35 +1,33 @@
 package votingsystem;
 
-import users.candidate.Candidate;
-import votingsystem.exceptions.InvalidVoteValueException;
-import votingsystem.exceptions.TwoTimeVoteException;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class Vote {
 
-    private Map<Candidate, Integer> votes;
+    /**
+     * First integer key is for candidate rank
+     * Second integer value is for the vote value given by one user
+     */
+    private final Map<Integer, Integer> votes;
 
     public Vote() {
         this.votes = new HashMap<>();
     }
 
-    private void addVote(Candidate candidate, int voteValue) throws InvalidVoteValueException, TwoTimeVoteException {
-        if (voteValue >= VoteValueConstants.MINIMUM_VOTE_VALUE.getVoteValue() &&
-                voteValue <= VoteValueConstants.MAXIMUM_VOTE_VALUE.getVoteValue()) {
-            if (votes.containsKey(candidate)) throw new TwoTimeVoteException();
-            else {
-                votes.put(candidate, voteValue);
-            }
-        } else throw new InvalidVoteValueException(voteValue);
+    public boolean addVote(int rank, int voteValue) {
+        if (votes.containsKey(rank)) return false; // voted two times for the same candidate, so error
+        else {
+            votes.put(rank, voteValue);
+            return true;
+        }
     }
 
-    public Map<Candidate, Integer> getVotes() {
+    public Map<Integer, Integer> getVotes() {
         return votes;
     }
 
-    public void clearVotes(){
+    public void clearVotes() {
         this.votes.clear();
     }
 }

@@ -13,6 +13,6 @@ public class CandidateImpl extends UnicastRemoteObject implements ICandidate {
 
     @Override
     public List<Candidate> getCandidateList() throws RemoteException {
-        return FileManager.createCandidateListFromFile();
+        return (List<Candidate>) FileManager.createList("Candidates.txt");
     }
 }

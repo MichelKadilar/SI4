@@ -1,7 +1,6 @@
 package users.user;
 
 import users.Person;
-import votingsystem.Vote;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -14,11 +13,10 @@ public class User implements Person {
     private UUID userId;
     private String oneTimePassword;
 
-    private Vote vote;
-
     public User(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.userId = UUID.randomUUID();
     }
 
     public String getFirstName() {
@@ -33,28 +31,12 @@ public class User implements Person {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
     public String getOneTimePassword() {
         return oneTimePassword;
     }
 
     public void setOneTimePassword(String oneTimePassword) {
         this.oneTimePassword = oneTimePassword;
-    }
-
-    public Vote getVote() {
-        return vote;
-    }
-
-    public void setVote(Vote vote) {
-        this.vote = vote;
-    }
-
-    public void clearVotes() {
-        this.vote.clearVotes();
     }
 
     @Override
@@ -65,13 +47,15 @@ public class User implements Person {
         User user = (User) o;
 
         if (!Objects.equals(firstName, user.firstName)) return false;
-        return Objects.equals(lastName, user.lastName);
+        if (!Objects.equals(lastName, user.lastName)) return false;
+        return Objects.equals(userId, user.userId);
     }
 
     @Override
     public int hashCode() {
         int result = firstName != null ? firstName.hashCode() : 0;
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 31 * result + (userId != null ? userId.hashCode() : 0);
         return result;
     }
 }

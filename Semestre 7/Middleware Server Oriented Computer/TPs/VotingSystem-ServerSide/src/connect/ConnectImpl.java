@@ -32,10 +32,9 @@ public class ConnectImpl extends UnicastRemoteObject implements IConnect {
         int userIndexInList = userList.indexOf(new User(info[0], info[1]));
         if (userIndexInList != -1) {
             // connection OK
-            UUID userid = UUID.randomUUID();
-            userList.get(userIndexInList).setUserId(userid);
-            votingSystemManager.addVoter(userid);
-            return userid;
+            UUID userId = userList.get(userIndexInList).getUserId();
+            votingSystemManager.addVoter(userId); // TODO : only add voter when register on vote
+            return userId;
         }
         return null;
     }

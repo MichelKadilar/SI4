@@ -2,6 +2,7 @@ package main;
 
 import connect.ConnectionManagerRMI;
 import users.candidate.CandidateRMI;
+import votingsystem.VotingRMI;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -16,5 +17,6 @@ public class SetupRMI {
         Registry reg = LocateRegistry.createRegistry(RMIPort);
         ConnectionManagerRMI.rebindConnectImpl(reg, "C");
         CandidateRMI.rebindUserManagerImpl(reg, "UM");
+        VotingRMI.rebindVotingImpl(reg, "V");
     }
 }

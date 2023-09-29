@@ -23,8 +23,25 @@ public class Output {
     }
 
     public static void displayCandidateList(List<Candidate> candidateList) {
-        for (Candidate candidate : candidateList) {
-            System.out.println(candidate.getRank() + " : " + candidate.getFirstName() + " " + candidate.getLastName() + " " + candidate.getPitch());
+        for (int index = 1; index < candidateList.size(); index++) {
+            Candidate candidate = candidateList.get(index);
+            System.out.println(index + " : " + candidate.getFirstName() + " " + candidate.getLastName() +
+                    " " + candidate.getPitch());
         }
+    }
+
+    public static void displayCandidate(int index, List<Candidate> candidateList) {
+        Candidate candidate = candidateList.get(index);
+        System.out.println(index + " : " + candidate.getFirstName() + " " + candidate.getLastName() +
+                " " + candidate.getPitch());
+    }
+
+    public static void displayPleaseVote() {
+        System.out.println("Please give a value between 0 and 3 included for this candidate");
+    }
+
+    public static void displayUserVoteJustInputed(int voteValue, int index, List<Candidate> candidateList) {
+        Candidate candidate = candidateList.get(index);
+        System.out.println("You voted : " + voteValue + " for : " + candidate.getFirstName() + " " + candidate.getLastName());
     }
 }

@@ -29,21 +29,16 @@ public class FileManager {
 
         try (Scanner scanner = new Scanner(file)) {
 
-            int rank = 1;
             //now read the file line by line...
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] info = line.split(" ");
-                candidates.add(new Candidate(info[0], info[1], info[2], rank));
-                rank++;
+                candidates.add(new Candidate(info[0], info[1], info[2]));
             }
             return candidates;
         } catch (FileNotFoundException e) { //TODO : do not interrupt the program but just ignore unreadable candidates
             e.printStackTrace();
             throw new RuntimeException();
-        } catch (InvalidRankValueException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
         }
     }
 
