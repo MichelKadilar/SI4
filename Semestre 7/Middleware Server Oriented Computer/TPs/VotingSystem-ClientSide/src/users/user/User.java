@@ -5,33 +5,22 @@ import users.Person;
 import java.util.Objects;
 import java.util.UUID;
 
-public class User implements Person {
-
-    private String firstName;
-
-    private String lastName;
+public class User extends Person {
     private UUID userId;
     private String oneTimePassword;
 
     public User(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+        super(firstName, lastName);
+        this.userId = UUID.randomUUID();
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
+    public User(String firstName, String lastName, UUID userId) {
+        super(firstName, lastName);
+        this.userId = userId;
     }
 
     public UUID getUserId() {
         return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
     }
 
     public String getOneTimePassword() {
@@ -49,14 +38,11 @@ public class User implements Person {
 
         User user = (User) o;
 
-        if (!Objects.equals(firstName, user.firstName)) return false;
-        return Objects.equals(lastName, user.lastName);
+        return Objects.equals(userId, user.userId);
     }
 
     @Override
     public int hashCode() {
-        int result = firstName != null ? firstName.hashCode() : 0;
-        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
-        return result;
+        return userId != null ? userId.hashCode() : 0;
     }
 }

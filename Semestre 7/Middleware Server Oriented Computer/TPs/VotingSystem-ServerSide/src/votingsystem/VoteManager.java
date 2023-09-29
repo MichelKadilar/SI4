@@ -17,15 +17,13 @@ public class VoteManager {
     private Map<Integer, Candidate> candidates;
 
     private Map<UUID, Boolean> haveVotersVotedMap;
-    private final Map<UUID, User> voters; // TODO : maybe not useful
-
     private final Map<UUID, Vote> voterVotes;
 
     public VoteManager() {
+        voterVotes = new HashMap<>();
         buildCandidatesList();
         buildHaveVotersVotedMap();
-        voterVotes = new HashMap<>();
-        voters = new HashMap<>();
+
     }
 
     private void buildCandidatesList() {
@@ -35,8 +33,6 @@ public class VoteManager {
         for (Candidate candidate : candidatesList) {
             candidates.put(rank, candidate);
         }
-
-
     }
 
     private void buildHaveVotersVotedMap() {
@@ -58,10 +54,10 @@ public class VoteManager {
         User user = findUserByUUID(userId);
         if (user == null) return false;
         else {
-            this.voters.put(userId, user);
+            this.voterVotes.put(userId, new Vote());
+            this.haveVotersVotedMap.put(userId, Boolean.FALSE);
+            return true;
         }
-        this.haveVotersVotedMap.put(userId, Boolean.FALSE);
-        return true;
     }
 
     public User findUserByUUID(UUID userId) {
@@ -118,10 +114,9 @@ public class VoteManager {
         } else {
             if (this.haveVotersVotedMap.get(userId).equals(Boolean.TRUE)) throw new TwoTimeVoteException();
             else {
-                for (User user : voters.values()) {
-                    if (user.getUserId().equals(userId)) {
-                        return this.voterVotes.get(userId).getVotes().size() == this.candidates.size();
-                    }
+                if (this.voterVotes.get(userId).getVotes().size() == this.candidates.size()) {
+                    this.updateVoterHasVoted(userId);
+                    return true;
                 }
             }
         }
@@ -133,10 +128,6 @@ public class VoteManager {
             return this.voterVotes.get(userId);
         }
         return null;
-    }
-
-    public Map<UUID, User> getVoters() {
-        return voters;
     }
 
     public Map<UUID, Boolean> getHaveVotersVotedMap() {

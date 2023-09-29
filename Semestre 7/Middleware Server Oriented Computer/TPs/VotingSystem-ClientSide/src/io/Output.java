@@ -23,17 +23,21 @@ public class Output {
     }
 
     public static void displayCandidateList(List<Candidate> candidateList) {
-        for (int index = 1; index < candidateList.size(); index++) {
+        for (int index = 0; index < candidateList.size(); index++) {
             Candidate candidate = candidateList.get(index);
-            System.out.println(index + " : " + candidate.getFirstName() + " " + candidate.getLastName() +
+            System.out.println((index+1) + " : " + candidate.getFirstName() + " " + candidate.getLastName() +
                     " " + candidate.getPitch());
         }
     }
 
     public static void displayCandidate(int index, List<Candidate> candidateList) {
         Candidate candidate = candidateList.get(index);
-        System.out.println(index + " : " + candidate.getFirstName() + " " + candidate.getLastName() +
+        System.out.println((index+1) + " : " + candidate.getFirstName() + " " + candidate.getLastName() +
                 " " + candidate.getPitch());
+    }
+
+    public static void displayLine(){
+        System.out.println("-------------------------------------------------------------------------");
     }
 
     public static void displayPleaseVote() {

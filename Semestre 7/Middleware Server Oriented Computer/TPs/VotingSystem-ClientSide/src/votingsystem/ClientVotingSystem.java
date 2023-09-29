@@ -24,9 +24,10 @@ public class ClientVotingSystem {
     public void voting() throws MalformedURLException, NotBoundException, RemoteException, InvalidUserIdException {
         IVoting votingRMI = (IVoting) Naming.lookup("rmi://localhost:2001/V");
 
-        int index = 1;
+        int index = 0;
         List<Candidate> candidates = candidateManager.getCandidates();
         while (index < candidates.size()) {
+            Output.displayLine();
             Output.displayCandidate(index, candidates);
             Output.displayPleaseVote();
             String voteValue = Input.getNextInputLine();
@@ -35,8 +36,11 @@ public class ClientVotingSystem {
                     intVoteValue > VotingConstants.MAXIMUM_VOTE_VALUE.getVoteValue()) {
                 throw new InvalidUserIdException(); // TODO : maybe just ask to user to retype a vote value ?
             }
-            votingRMI.sendVote(MainClient.user.getUserId(), "", index, intVoteValue); // TODO : take OTP in account
-            Output.displayUserVoteJustInputed(intVoteValue, index, candidates);
+            if (votingRMI.sendVote(MainClient.user.getUserId(), "", index+1, intVoteValue)) { // TODO : take OTP in account
+                Output.displayUserVoteJustInputed(intVoteValue, index, candidates);
+            } else {
+                throw new InvalidUserIdException();
+            }
             index++;
         }
         System.out.println(votingRMI.getUserVote(MainClient.user.getUserId(), "").toString()); // TODO : take OTP in account

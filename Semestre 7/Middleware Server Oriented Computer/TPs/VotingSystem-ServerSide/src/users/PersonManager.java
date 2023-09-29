@@ -40,4 +40,14 @@ public class PersonManager<T extends Person> {
     public void clearList() {
         this.personList.clear();
     }
+
+    public int findPersonInList(String firstName, String lastName) {
+        for (int i = 0; i < this.personList.size(); i++) {
+            if (personList.get(i).getFirstName().equals(firstName) &&
+                    personList.get(i).getLastName().equals(lastName)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }

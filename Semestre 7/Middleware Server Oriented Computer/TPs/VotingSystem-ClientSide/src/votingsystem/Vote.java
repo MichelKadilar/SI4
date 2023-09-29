@@ -1,9 +1,10 @@
 package votingsystem;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Vote {
+public class Vote implements Serializable {
 
     /**
      * First integer key is for candidate rank

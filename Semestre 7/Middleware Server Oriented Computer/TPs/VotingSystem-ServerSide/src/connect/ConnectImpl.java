@@ -1,6 +1,7 @@
 package connect;
 
 import main.Main;
+import users.Person;
 import users.user.User;
 import votingsystem.VotingSystemManager;
 
@@ -29,7 +30,7 @@ public class ConnectImpl extends UnicastRemoteObject implements IConnect {
 
 
         List<User> userList = Main.userConnectionManager.getPersonList();
-        int userIndexInList = userList.indexOf(new User(info[0], info[1]));
+        int userIndexInList = Main.userConnectionManager.findPersonInList(info[0], info[1]);
         if (userIndexInList != -1) {
             // connection OK
             UUID userId = userList.get(userIndexInList).getUserId();

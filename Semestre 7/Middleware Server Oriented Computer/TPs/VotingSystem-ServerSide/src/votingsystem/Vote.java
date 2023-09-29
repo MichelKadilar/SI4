@@ -1,9 +1,10 @@
 package votingsystem;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Vote {
+public class Vote implements Serializable {
 
     /**
      * First integer key is for candidate rank
@@ -29,5 +30,14 @@ public class Vote {
 
     public void clearVotes() {
         this.votes.clear();
+    }
+
+    @Override
+    public String toString() {
+        String str = "";
+        for (Integer candidateRank : votes.keySet()) {
+            str += "Rank : " + candidateRank + " vote given : " + votes.get(candidateRank) + "\n";
+        }
+        return str;
     }
 }

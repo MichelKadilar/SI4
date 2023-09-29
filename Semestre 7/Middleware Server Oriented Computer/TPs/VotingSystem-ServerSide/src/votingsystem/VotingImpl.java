@@ -17,7 +17,6 @@ public class VotingImpl extends UnicastRemoteObject implements IVoting {
     @Override
     public boolean sendVote(UUID userId, String otp, int rank, int voteValue) throws RemoteException, InvalidUserIdException {
         if (!votingSystemManager.getVoteManager().hasVoterAlreadyVoted(userId) &&
-                !votingSystemManager.getVoteManager().getVoters().containsKey(userId) &&
                 (votingSystemManager.getVoteManager().findUserByUUID(userId) != null)) {
 
             return votingSystemManager.getVoteManager().addVoteForCandidate(userId, rank, voteValue);

@@ -6,6 +6,7 @@ import io.Output;
 import main.MainClient;
 import menuchoice.MenuChoiceManager;
 import users.user.User;
+import votingsystem.exceptions.InvalidUserIdException;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -27,7 +28,7 @@ public class ConnectionManager {
                 if (userId != null) {
                     isUserConnected = true;
                     String[] userInfo = clientCredentials.split(" ");
-                    this.fillUserInfo(userInfo[0], userInfo[1], userId);
+                    fillUserInfo(userInfo[0], userInfo[1], userId);
                     Output.displaySuccessfulConnection();
                     MenuChoiceManager.choiceAfterSuccessfulConnection();
                 } else {
@@ -47,12 +48,13 @@ public class ConnectionManager {
                 throw new RuntimeException(e);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
+            } catch (InvalidUserIdException e) {
+                throw new RuntimeException(e);
             }
         }
     }
 
-    private void fillUserInfo(String firstName, String lastName, UUID userId) {
-        MainClient.user = new User(firstName, lastName);
-        MainClient.user.setUserId(userId);
+    private static void fillUserInfo(String firstName, String lastName, UUID userId) {
+        MainClient.user = new User(firstName, lastName, userId);
     }
 }
