@@ -1,9 +1,7 @@
 package connect;
 
 import main.Main;
-import users.Person;
 import users.user.User;
-import votingsystem.VotingSystemManager;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -24,8 +22,7 @@ public class ConnectImpl extends UnicastRemoteObject implements IConnect {
      */
     @Override
     public UUID sendCredentials(String username) throws RemoteException {
-        VotingSystemManager votingSystemManager = new VotingSystemManager();
-        System.out.println(username);
+        //System.out.println(username); // TODO : delete
         String[] info = username.split(" ");
 
 
@@ -33,9 +30,7 @@ public class ConnectImpl extends UnicastRemoteObject implements IConnect {
         int userIndexInList = Main.userConnectionManager.findPersonInList(info[0], info[1]);
         if (userIndexInList != -1) {
             // connection OK
-            UUID userId = userList.get(userIndexInList).getUserId();
-            votingSystemManager.addVoter(userId); // TODO : only add voter when register on vote
-            return userId;
+            return userList.get(userIndexInList).getUserId();
         }
         return null;
     }

@@ -14,4 +14,8 @@ public class CandidateManager {
     public List<Candidate> getCandidates() {
         return candidates;
     }
+
+    public void clearCandidates() {
+        this.candidates.clear();
+    }
 }

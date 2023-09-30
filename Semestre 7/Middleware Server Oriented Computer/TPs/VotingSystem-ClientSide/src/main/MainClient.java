@@ -1,7 +1,6 @@
 package main;
 
 import connect.ConnectionManager;
-import connect.exceptions.BadCredentialsException;
 import users.user.User;
 
 public class MainClient {

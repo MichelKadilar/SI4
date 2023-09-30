@@ -4,6 +4,8 @@ import votingsystem.exceptions.InvalidUserIdException;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 public class VotingImpl extends UnicastRemoteObject implements IVoting {
@@ -30,7 +32,24 @@ public class VotingImpl extends UnicastRemoteObject implements IVoting {
     }
 
     @Override
+    public boolean hasVoteStarted() throws RemoteException {
+        return this.votingSystemManager.hasVotedBegan();
+    }
+
+    @Override
+    public boolean hasVoteEnded() throws RemoteException {
+        return this.votingSystemManager.hasVoteEnded();
+    }
+
+    @Override
     public Vote getUserVote(UUID userId, String otp) throws RemoteException { // TODO : take OTP in account
         return this.votingSystemManager.getVoteManager().getUserVote(userId);
+    }
+
+    @Override
+    public Map<Integer, Integer> getFinalCandidatesRanking(UUID userId, String otp) throws RemoteException { // TODO : take OTP in account
+        if (this.votingSystemManager.hasVoteEnded()) {
+            return this.votingSystemManager.getFinalRankingSystem().getFinalRanking();
+        } else return Collections.emptyMap();
     }
 }
