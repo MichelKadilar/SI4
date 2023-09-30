@@ -1,6 +1,7 @@
 package votingsystem;
 
 import votingsystem.exceptions.InvalidUserIdException;
+import votingsystem.exceptions.TwoTimeVoteException;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -20,8 +21,15 @@ public class VotingImpl extends UnicastRemoteObject implements IVoting {
     public boolean sendVote(UUID userId, String otp, int rank, int voteValue) throws RemoteException, InvalidUserIdException {
         if (!votingSystemManager.getVoteManager().hasVoterAlreadyVoted(userId) &&
                 (votingSystemManager.getVoteManager().findUserByUUID(userId) != null)) {
-
-            return votingSystemManager.getVoteManager().addVoteForCandidate(userId, rank, voteValue);
+            boolean voteSuccess = votingSystemManager.getVoteManager().addVoteForCandidate(userId, rank, voteValue);
+            try {
+                if (votingSystemManager.getVoteManager().hasVoterVotedForEveryCandidate(userId)) {
+                    votingSystemManager.getVoteManager().updateVoterHasVoted(userId);
+                }
+                return voteSuccess;
+            } catch (TwoTimeVoteException e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }

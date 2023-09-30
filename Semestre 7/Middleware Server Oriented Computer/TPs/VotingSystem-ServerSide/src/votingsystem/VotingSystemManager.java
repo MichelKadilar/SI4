@@ -15,17 +15,16 @@ public class VotingSystemManager {
 
     private boolean hasVoteEnded;
 
-    private boolean hasVotedBegan;
+    private boolean hasVoteBegan;
 
     public VotingSystemManager() {
         this.voteManager = new VoteManager();
         Set<Integer> candidatesRank = this.voteManager.getCandidates().keySet();
-        finalRankingSystem = new FinalRankingSystem(new ArrayList<>(candidatesRank)); // because ranks are unique, this cast should work
-        hasVotedBegan = false;
+        this.finalRankingSystem = new FinalRankingSystem(new ArrayList<>(candidatesRank)); // because ranks are unique, this cast should work
+        this.hasVoteBegan = false;
         this.hasVoteEnded = false;
 
         new Thread(this::manageVote).start();
-
     }
 
 
@@ -35,30 +34,41 @@ public class VotingSystemManager {
         do {
             String startVoteStringKey = Input.getNextInputLine();
             for (StartingEndingVotingKeys key : StartingEndingVotingKeys.values()) {
-                char startKey = startVoteStringKey.charAt(0);
-                if (key.getKey() == startKey) {
+                char charKey = startVoteStringKey.charAt(0);
+                if (key.getKey() == charKey) {
                     isKeyRight = true;
-                    if (startKey == 'S') {
-                        this.startVote();
-                    }
+                    if (charKey == 'S') {
+                        if (this.voteManager.isThereVoters()) {
+                            this.hasVoteEnded = false;
+                            this.hasVoteBegan = true;
+                            this.startVote();
+                        } else {
+                            Output.displayNoVoters();
+                            isKeyRight = false;
+                        }
+                    } /*else if (charKey == 'E') {
+                        this.hasVoteEnded = true;
+                        this.hasVotedBegan = false;
+                        this.finalRankingSystem.fillFinalRankingMap(this.voteManager.getVoterVotes());
+                    }*/
                 }
             }
         } while (!isKeyRight);
     }
 
     public void startVote() {
-        this.hasVotedBegan = true;
-        this.hasVoteEnded = false;
         Output.displayTheVoteHasBeenStarted();
-        while (!this.voteManager.haveEveryVoterVoted()) {
+        while (!this.voteManager.haveEveryVoterVoted()) { // && !hasVoteEnded
         }
-        this.finalRankingSystem.fillFinalRankingMap(this.voteManager.getVoterVotes());
         this.hasVoteEnded = true;
-        this.hasVotedBegan = false;
+        this.hasVoteBegan = false;
+        this.finalRankingSystem.fillFinalRankingMap(this.voteManager.getVoterVotes());
     }
 
     public boolean addVoter(UUID userId) {
-        return voteManager.addVoterToMap(userId);
+        if (!this.hasVoteBegan) {
+            return voteManager.addVoterToMap(userId);
+        } else return false;
     }
 
     public VoteManager getVoteManager() {
@@ -74,6 +84,6 @@ public class VotingSystemManager {
     }
 
     public boolean hasVotedBegan() {
-        return hasVotedBegan;
+        return hasVoteBegan;
     }
 }

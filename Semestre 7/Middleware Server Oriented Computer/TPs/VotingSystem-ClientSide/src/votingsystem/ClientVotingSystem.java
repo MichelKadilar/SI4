@@ -6,6 +6,7 @@ import main.MainClient;
 import users.candidate.Candidate;
 import users.candidate.CandidateManager;
 import votingsystem.exceptions.InvalidUserIdException;
+import votingsystem.exceptions.InvalidVoteValueException;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class ClientVotingSystem {
         this.winners = new HashMap<>();
     }
 
-    public void voting(IVoting votingRMI) throws RemoteException, InvalidUserIdException {
+    public void voting(IVoting votingRMI) throws RemoteException, InvalidUserIdException, InvalidVoteValueException {
         int index = 0;
         List<Candidate> candidates = candidateManager.getCandidates();
         while (index < candidates.size()) {
@@ -34,15 +35,15 @@ public class ClientVotingSystem {
             int intVoteValue = Integer.parseInt(voteValue);
             if (intVoteValue < VotingConstants.MINIMUM_VOTE_VALUE.getVoteValue() ||
                     intVoteValue > VotingConstants.MAXIMUM_VOTE_VALUE.getVoteValue()) {
-                throw new InvalidUserIdException(); // TODO : maybe just ask to user to retype a vote value ?
+                throw new InvalidVoteValueException(intVoteValue); // TODO : maybe just ask to user to retype a vote value ?
             }
 
-            if (votingRMI.sendVote(MainClient.user.getUserId(), "", index + 1, intVoteValue)) { // TODO : take OTP in account
+            if (votingRMI.sendVote(MainClient.user.getUserId(), "", index, intVoteValue)) { // TODO : take OTP in account
                 Output.displayUserVoteJustInputed(intVoteValue, index, candidates);
+                index++;
             } else {
                 throw new InvalidUserIdException();
             }
-            index++;
         }
         System.out.println(votingRMI.getUserVote(MainClient.user.getUserId(), "").toString()); // TODO : take OTP in account
 
@@ -58,10 +59,6 @@ public class ClientVotingSystem {
         } else {
             Output.displayElectionHasNotFinished();
         }
-    }
-
-    public CandidateManager getCandidateManager() {
-        return candidateManager;
     }
 
     private void addWinnersToMap(List<Candidate> candidates, Map<Integer, Integer> candidatesFinalResults) {

@@ -9,4 +9,8 @@ public class Output {
     public static void displayTheVoteHasBeenStarted() {
         System.out.println("The vote has been started");
     }
+
+    public static void displayNoVoters(){
+        System.out.println("There is no registered voter in the election you want to start");
+    }
 }

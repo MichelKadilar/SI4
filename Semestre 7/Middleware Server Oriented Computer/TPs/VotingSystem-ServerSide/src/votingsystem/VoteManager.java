@@ -16,14 +16,13 @@ public class VoteManager {
 
     private Map<Integer, Candidate> candidates;
 
-    private Map<UUID, Boolean> haveVotersVotedMap;
+    private final Map<UUID, Boolean> haveVotersVotedMap;
     private final Map<UUID, Vote> voterVotes;
 
     public VoteManager() {
         voterVotes = new HashMap<>();
+        this.haveVotersVotedMap = new HashMap<>();
         buildCandidatesList();
-        buildHaveVotersVotedMap();
-
     }
 
     private void buildCandidatesList() {
@@ -32,15 +31,16 @@ public class VoteManager {
         int rank = 0;
         for (Candidate candidate : candidatesList) {
             candidates.put(rank, candidate);
+            rank++;
         }
     }
 
-    private void buildHaveVotersVotedMap() {
+    /*private void buildHaveVotersVotedMap() {
         this.haveVotersVotedMap = new HashMap<>();
         for (User user : Main.userConnectionManager.getPersonList()) {
             addVoterToMap(user.getUserId());
         }
-    }
+    }*/
 
     public void clearCandidatesList() {
         this.candidates.clear();
@@ -79,9 +79,11 @@ public class VoteManager {
     }
 
     public boolean haveEveryVoterVoted() {
-        if (this.haveVotersVotedMap.size() > 1) {
+        if (!this.haveVotersVotedMap.isEmpty()) { // TODO : pass the minimal number to 2
             for (Boolean b : this.haveVotersVotedMap.values()) {
-                if (b.equals(Boolean.FALSE)) return false;
+                if (b.equals(Boolean.FALSE)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -89,6 +91,10 @@ public class VoteManager {
 
     public Map<Integer, Candidate> getCandidates() {
         return candidates;
+    }
+
+    public boolean isThereVoters() {
+        return !this.haveVotersVotedMap.isEmpty();
     }
 
     public boolean hasVoterAlreadyVoted(UUID userId) throws InvalidUserIdException {
@@ -115,7 +121,6 @@ public class VoteManager {
             if (this.haveVotersVotedMap.get(userId).equals(Boolean.TRUE)) throw new TwoTimeVoteException();
             else {
                 if (this.voterVotes.get(userId).getVotes().size() == this.candidates.size()) {
-                    this.updateVoterHasVoted(userId);
                     return true;
                 }
             }

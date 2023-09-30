@@ -7,6 +7,7 @@ import main.MainClient;
 import menuchoice.MenuChoiceManager;
 import users.user.User;
 import votingsystem.exceptions.InvalidUserIdException;
+import votingsystem.exceptions.InvalidVoteValueException;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -49,6 +50,8 @@ public class ConnectionManager {
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             } catch (InvalidUserIdException e) {
+                throw new RuntimeException(e);
+            } catch (InvalidVoteValueException e) {
                 throw new RuntimeException(e);
             }
         }
